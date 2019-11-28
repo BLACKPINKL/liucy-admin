@@ -1,13 +1,50 @@
 <template>
   <div>
     品牌添加
+    <formCreate ref="fc" :rule="rule" :option="option"/>
   </div>
 </template>
 
 <script>
-  export default {
-    name: 'product_brand'
+//获取生成器
+import { maker } from '@form-create/iview'
+export default {
+  name: 'product_brand',
+  
+  data() {
+    return {
+      rule:[
+       maker.input('商品名称', 'goods_name', 'iphone').props({
+          placeholder: '请输入商品名称',
+          width: 300
+        }).validate([{
+          required: true,
+          message: '请输入商品名称',
+          trigger: 'blur'
+        }]).event({
+          change: console.log
+        }).emit(['change']),
+        {
+          type:'datePicker',
+          field:'created_at',
+          title:'创建时间'
+        } 
+     ],
+     option:{
+       //表单提交事件
+       onSubmit:function (formData) {
+         console.log(formData);
+         
+       }
+     }
+    }
+  },
+  mounted() {
+    // let maker = maker.input('field','title','value',{disabled:true})
+    // console.log(maker);
+    
   }
+}
 </script>
 
 <style lang="scss" scoped>

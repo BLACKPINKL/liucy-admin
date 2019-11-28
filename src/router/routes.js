@@ -41,6 +41,28 @@ export const constantsRoutes =  [
     ]
   },
   
+  {
+    path: '/devlop',
+    component: Layout,
+    meta: {
+      title: '开发设置',
+      icon: 'ios-stats-outline',
+    },
+    name: 'devlop',
+    children: [
+      {
+        path: 'devlop/form',
+        component: () => import('pages/devlop/form'),
+        name: 'product_form',
+        meta: {
+          title: '添加表单',
+          icon: 'ios-search',
+          noCache: true
+        }
+      }
+    ]
+  },
+  
 ]
 
 

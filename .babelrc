@@ -10,11 +10,5 @@
       }],
       "stage-1"
     ],
-    "plugins": ["transform-vue-jsx", "syntax-dynamic-import", [
-      "import",
-      {
-        "libraryName": "iview",
-        "libraryDirectory": "src/components"
-      }
-    ]]
+    "plugins": ["transform-vue-jsx", "syntax-dynamic-import"]
 }
