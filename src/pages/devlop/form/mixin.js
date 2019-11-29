@@ -1,26 +1,28 @@
-
+import {
+  maker
+} from '@form-create/iview'
 // 需要创建的表单项
-return {
+const mixin = {
+  
   methods: {
     getForm(type, data) {
+      
       // 获取最终参数
       let prams = this.getPram(type, data)
+      // console.log(maker);
+      
       let o = {
-        input :[
-          maker.input(prams.label, prams.filed, prams.value).props({
-            width: prams.width
-          }),
-        ],
-        textarea: [
-          maker.input(prams.label, prams.filed, prams.value).props({
-            type,
-            width: prams.width,
-            autosize: {
-              minRows: 5,
-              maxRows: 9
-            }
-          }),
-        ],
+        input : maker.input(prams.label, prams.filed, prams.value).props({
+          width: prams.width
+        }),
+        textarea: maker.input(prams.label, prams.filed, prams.value).props({
+          type,
+          width: prams.width,
+          autosize: {
+            minRows: 5,
+            maxRows: 9
+          }
+        }),
         radio: [],
         select: [],
         DatePicker: []
@@ -33,9 +35,9 @@ return {
       // 基础字段
       let basic = {
         label: data['label-' + o.id], 
-        filed: data['filed' + o.id], 
-        value: data['value' + o.id] || '',
-        width: data['width' + o.id]
+        filed: data['filed-' + o.id], 
+        value: data['value-' + o.id] || '',
+        width: data['width-' + o.id]
       }
 
       if(type === 'input' || type === 'textarea') return basic
@@ -58,3 +60,5 @@ return {
     }
   }
 }
+
+export default mixin
