@@ -40,8 +40,10 @@
     maker
   } from '@form-create/iview'
   import {randomId} from 'utils'
+  import mixin from 'mixin'
   export default {
     name: 'devlop_form',
+    mixins: [mixin],
     data() {
       return {
         split1: 0.6,
@@ -93,35 +95,8 @@
     methods: {
       addFormDy(type) {
         let data = this.formData
-        console.log(data);
-        // 获取id
-        let keys = Object.keys(data)
-        let id = 0
-        keys.forEach(key => {
-          if(key.includes('filed')) id = key.replace('filed', '')
-        })
-        if(type === 'input') {
-          this.rule.push(
-            
-            maker.input(data.label, data['filed' + id], data.value || '').props({
-              width: data.width
-            }),
-          )
-        }
-
-        if(type === 'textarea') {
-          this.rule.push(
-            maker.input(data.label, data.filed, data.value || '').props({
-              type,
-              width: data.width,
-              autosize: {
-                minRows: 5,
-                maxRows: 9
-              }
-            }),
-          )
-        }
-        
+        let form = this.getForm(type, data)
+        this.rule = form
       },
       setActiveRule(key) {
         let arr = this.editRule
@@ -131,23 +106,21 @@
           
           return item.key === key
         })
-        // console.log(key, filter);
+        console.log(key, filter);
         
         this.activeRule = filter
       },
-      // 点击要生成的某一个表单项
+      // 点击要生成的某一个表单项 单行文本
       handleClick(item) {
-        let id = randomId(3)
+        let id = randomId(4)
         this.editRule.push(
           {
             key: id,
             form: [
-              maker.input('字段名', 'filed' + id, id).props({
-                labelWidth: 80,
-              }),
-              maker.input('label', 'label', item.key),
-              maker.input('宽度', 'width', '50%'),
-              maker.input('默认值', 'value', '默认值'),
+              maker.input('字段名', 'filed-' + id, id),
+              maker.input('label', 'label-' + id, item.key),
+              maker.input('宽度', 'width-' + id, '50%'),
+              maker.input('默认值', 'value-' + id, '默认值'),
             ]
           }
         )
