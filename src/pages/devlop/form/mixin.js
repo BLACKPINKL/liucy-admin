@@ -3,33 +3,197 @@ import {
 } from '@form-create/iview'
 // 需要创建的表单项
 const mixin = {
-  
+  data() {
+    return {
+      basicFiled: [],
+      initRadiosNum: 2,
+      radios: [
+        
+      ]
+    }
+  },
+  watch: {
+    radios(val) {
+      // this.addFormDy('radio')
+    }
+  },
   methods: {
     getForm(type, data) {
       
       // 获取最终参数
-      let prams = this.getPram(type, data)
+      
+        let prams = this.getPram(type, data)
+        console.log('prams', prams);
+        let o = {
+          input : maker.input(prams.label, prams.filed, prams.value).col({
+            span: parseInt(prams.width),
+          }),
+          textarea: maker.input(prams.label, prams.filed, prams.value).props({
+            type,
+            autosize: {
+              minRows: 5,
+              maxRows: 9
+            }
+          }).col({
+            span: parseInt(prams.width)
+          }),
+          radio: maker.radio(prams.label, prams.filed, prams.value).options(this.basicFiled.radios),
+          select: [],
+          DatePicker: []
+        }
+      
+      
       // console.log(maker);
       
-      let o = {
-        input : maker.input(prams.label, prams.filed, prams.value).props({
-          width: prams.width
-        }),
-        textarea: maker.input(prams.label, prams.filed, prams.value).props({
-          type,
-          width: prams.width,
-          autosize: {
-            minRows: 5,
-            maxRows: 9
-          }
-        }),
-        radio: [],
-        select: [],
-        DatePicker: []
-      }
+      
       return o[type]
     },
 
+    getFormActive(id, type) {
+      let that = this
+      // 公共部分
+      let basic = [
+        maker.input('字段名', 'filed-' + id, id).event({
+          change(e) {
+            that.bindModel(e, 'filed', id)
+            
+          }
+        }),
+        maker.input('label', 'label-' + id, type).event({
+          change(e) {
+            that.bindModel(e, 'title', id)
+            
+          }
+        }),
+        maker.input('宽度', 'width-' + id, 14).event({
+          change(e) {
+            that.bindModel(e, 'span', id)
+            
+          }
+        }),
+        maker.input('默认值', 'value-' + id, '默认值').event({
+          change(e) {
+            that.bindModel(e, 'value', id)
+            
+          }
+        }),
+      ]
+      let o = {
+        input: {
+          key: id,
+          form: basic,
+        },
+        textarea: {
+          key: id,
+          form: basic,
+        },
+        radio: {
+          key: id,
+          form: this.getRadio(basic, id)
+        }
+      }
+      return o[type]
+    },
+    // radio
+    getRadio(basic, id) {
+      let that = this
+      this.getInitRadios(id)
+      basic.push(
+        maker.create('i-button').domProps({
+          innerHTML: '添加选项'
+        })
+        .props({
+          type: "primary",
+          size: "large",
+          htmlType: "button",
+          show: true
+        }).on({
+          click: () => {
+            let i = ++that.initRadiosNum
+            let $f = that.$refs.fc2.$f
+            
+            let form = maker.input(`option${i}`, `option${i}-${id}`, `option${i}`).event({
+              change(e) {
+                that.bindModel(e, 'options', id, `option${i}-${id}`)
+              }
+            })
+            let formTitle = maker.input(`label${i}`, `label${i}-${id}`, `option${i}-label${i}`).event({
+              change(e) {
+                that.bindModel(e, 'options', id, `label${i}-${id}`)
+              }
+            }).col({span: 10})
+            // 生成 右边radio的编辑项  
+            // form为radio的value formTitle为radio的label
+            $f.append(form)
+            $f.append(formTitle, formTitle)
+            console.log(form, );
+
+            // 生成radio子集
+            this.rule.some(item => {
+              // 如果当前有options参数 说明是radio
+              if(item._data.field === id && item._data.options) {
+                // console.log('form', form);
+                
+                item._data.options.push(
+                  {
+                    value: form._data.value, 
+                    label: formTitle._data.value, 
+                    valueKey: form._data.field, 
+                    labelKey: formTitle._data.field
+                  }
+                )
+                return true
+              }
+              
+            })
+            console.log(this.rule);
+            
+            
+          },
+        }).col({
+          span: 8
+        })
+      )
+
+      return basic.concat([...this.radios[0].forms, ...this.radios[1].forms])
+    },
+    getInitRadios(id) {
+      let that = this
+      // 初始option
+      let arr = [
+        {
+          forms: [
+            maker.input('option1', 'option1-' + id, 'option1').event({
+              change(e) {
+                that.bindModel(e, 'options', id, 'option1-' + id)
+              }
+            }),
+            maker.input(`label1`, `label1-${id}`, `option1-label1`).event({
+              change(e) {
+                that.bindModel(e, 'options', id, `label1-${id}`)
+              }
+            }).col({span: 10}),
+          ] 
+        },
+        {
+          forms: [
+            maker.input('option2', 'option2-' + id, 'option2').event({
+              change(e) {
+                that.bindModel(e, 'filed', id, 'option2-' + id)
+              }
+            }),
+            maker.input(`label2`, `label2-${id}`, `option2-label2`).event({
+              change(e) {
+                that.bindModel(e, 'filed', id, `label2-${id}`)
+              }
+            }).col({span: 10}),
+          ] 
+        },
+      ]
+      this.radios = arr
+      return this.radios
+
+    },
     getPram(type, data) {
       let o = this.getId(data)
       // 基础字段
@@ -40,8 +204,39 @@ const mixin = {
         width: data['width-' + o.id]
       }
 
+
       if(type === 'input' || type === 'textarea') return basic
-      // if(type === 'radio')
+      console.log('data', data);
+      
+      if(type === 'radio'){
+        
+        basic.radios = []
+        this.radios.forEach(radio => {
+          let radioParams = {
+            value: '',
+            label: '',
+            valueKey: '', 
+            labelKey: ''
+          }
+          // 判断是否是label
+          radio.forms.forEach((form, i) => {
+            console.log(form);
+            
+            if(!form._data.title.includes('label')) {
+              radioParams.value = data[form._data.field]
+              radioParams.valueKey = form.__field__
+            }else {
+              radioParams.label = data[form._data.field]
+              radioParams.labelKey = form.__field__
+            }
+            
+          })
+          basic.radios.push(radioParams)
+        })
+        // 缓存字段
+        this.basicFiled = basic
+        return this.basicFiled
+      }
       // if(type === 'select')
       // if(type === 'DatePicker')
     },

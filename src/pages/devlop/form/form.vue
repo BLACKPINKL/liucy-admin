@@ -80,25 +80,39 @@
           },
         ],
         formData: {},
+        i: 1,
+        id: '',
+        f: null
       }
     },
     computed: {
       
     },
+    watch: {
+      rule(val) {
+        this.$nextTick(() => {
+          this.f = this.$refs['fc' + this.id][0].$f
+        })
+      }
+    },
     methods: {
+      // 生成form
       addFormDy(type) {
         let $f = this.$refs.fc2.$f
-        console.log(this.$refs.fc2);
         
         this.$nextTick(() => {
           this.formData = $f.formData()
           let data = this.formData
           let form = this.getForm(type, data)
           this.rule.push(form)
+          
+          
+          // this.f = this.$refs['fc' + this.id][0].$f
         })
         
         
       },
+      // 获取点击对应的form
       setActiveRule(key) {
         let arr = this.editRule
         if(!arr.length) return arr
@@ -110,78 +124,77 @@
       },
       // 点击要生成的某一个表单项 单行文本
       handleClick(item) {
-
-        let id = randomId(4)
         let that = this
-        that.editRule.push(
-          {
-            key: id,
-            form: [
-              maker.input('字段名', 'filed-' + id, id).event({
-                change(e) {
-                  that.bindModel(e, 'filed-' + id, id)
-                  
-                }
-              }),
-              maker.input('label', 'label-' + id, item.key).event({
-                change(e) {
-                  that.bindModel(e, 'label-' + id, id)
-                  
-                }
-              }),
-              maker.input('宽度', 'width-' + id, '50%').event({
-                change(e) {
-                  that.bindModel(e, 'width-' + id, id)
-                  
-                }
-              }),
-              maker.input('默认值', 'value-' + id, '默认值').event({
-                change(e) {
-                  that.bindModel(e, 'value-' + id, id)
-                  
-                }
-              }),
-            ]
-          }
-        )
+        let id = randomId(4)
+        this.id = id
         
-        this.setActiveRule(id)
-        this.addFormDy(item.type)
+        this.$nextTick(() => {
+          that.editRule.push(
+            that.getFormActive(id, item.type)
+          )
+          this.setActiveRule(id)
+          this.addFormDy(item.type)
+        })
+        
       },
       // 点击生成的某一个表单 切换到对应的表单项
       handleClickForm(key) {
         this.setActiveRule(key)
         
       },
-      bindModel(e, filed, id) {
-          let val = e.target.value
-          let $f = this.$refs['fc' + id][0].$f
-          // $f.updateRule(id, {
-          //   value: val,
-          //   filed: val
-          // })
-
+      bindModel(e, filed, id, key) {
+        let val = e.target.value
+        let $f = this.$refs['fc' + id][0].$f
         
-        // this.rule.some(item => {
-        //   console.log(item._data.value);
+        console.log('$f', e);
+        let update = {}
+        // 说明是改某一个子集
+        if(filed === 'options') {
           
-        // })
-        // $f.setValue(id, e.target.value)
+          $f.model()[id].options.some(item => {
+            if(item.labelKey === key) {
+              item.label = val
+              return true
+            }
+            if(item.valueKey === key) {
+              item.value = val
+              return true
+            }
+          })
+          // update['options'] = [
+          //   // {value: }
+          // ]
+          console.log($f.model());
+          
+          return
+        }
+        // 如果更改宽度
+        if(filed == 'span'){
+          update['col'] = {
+            span: parseInt(val)
+          }
+        }
+        else update[filed] = val
+        
+        $f.updateRule(id, update)
+          
       },
 
 
       handleClickBtn() {
-      console.log(this.rule);
-      
+        console.log(this.rule);
+        
+        this.formData['value-' + this.id] = this.i
         
       }
     }
   }
 </script>
 
-<style lang="less" scoped>
+<style lang="less">
   .form_split {
     height: 800px;
+    width: 100%;
     border: 1px solid #dcdee2;
     background: #5cadff;
   }
@@ -189,5 +202,9 @@
   .demo-split-pane {
     padding: 10px;
     
+  }
+  // 重置cell样式
+  .ivu-cell-main {
+    width: 100% !important;
   }
 </style>

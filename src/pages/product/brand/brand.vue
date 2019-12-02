@@ -15,8 +15,11 @@ export default {
     return {
       rule:[
        maker.input('商品名称', 'goods_name', 'iphone').props({
-          placeholder: '请输入商品名称',
-          width: 300
+          placeholder: '请输入商品名称'
+        }).col({
+          // 总24 默认50%
+          span: 12,
+          labelWidth: 80
         }).validate([{
           required: true,
           message: '请输入商品名称',
