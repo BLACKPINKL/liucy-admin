@@ -12,35 +12,31 @@ const mixin = {
       ]
     }
   },
-  watch: {
-    radios(val) {
-      // this.addFormDy('radio')
-    }
-  },
+  
   methods: {
     getForm(type, data) {
       
       // 获取最终参数
       
-        let prams = this.getPram(type, data)
-        console.log('prams', prams);
-        let o = {
-          input : maker.input(prams.label, prams.filed, prams.value).col({
-            span: parseInt(prams.width),
-          }),
-          textarea: maker.input(prams.label, prams.filed, prams.value).props({
-            type,
-            autosize: {
-              minRows: 5,
-              maxRows: 9
-            }
-          }).col({
-            span: parseInt(prams.width)
-          }),
-          radio: maker.radio(prams.label, prams.filed, prams.value).options(this.basicFiled.radios),
-          select: [],
-          DatePicker: []
-        }
+      let prams = this.getPram(type, data)
+      console.log('prams', prams);
+      let o = {
+        input : maker.input(prams.label, prams.filed, prams.value).col({
+          span: parseInt(prams.width),
+        }),
+        textarea: maker.input(prams.label, prams.filed, prams.value).props({
+          type,
+          autosize: {
+            minRows: 5,
+            maxRows: 9
+          }
+        }).col({
+          span: parseInt(prams.width)
+        }),
+        radio: maker.radio(prams.label, prams.filed, prams.value).options(this.basicFiled.radios),
+        select: [],
+        DatePicker: []
+      }
       
       
       // console.log(maker);
@@ -117,23 +113,45 @@ const mixin = {
                 that.bindModel(e, 'options', id, `option${i}-${id}`)
               }
             })
+
             let formTitle = maker.input(`label${i}`, `label${i}-${id}`, `option${i}-label${i}`).event({
               change(e) {
                 that.bindModel(e, 'options', id, `label${i}-${id}`)
               }
             }).col({span: 10})
+
+            let formDelBtn = maker.create('i-button').domProps({
+              innerHTML: '删除'
+            }).props({
+              type: "success",
+              size: "default",
+              htmlType: "button",
+              show: true,
+              field: `btn-${i}`
+            }).name(`btn-${i}`).on({
+              click: (e) => {
+                let btns = that.$refs.fc2.$f.component()
+                console.log(btns);
+                
+                that.handleClickDelRadio(e, btns)
+                
+              }
+            })
+
+
             // 生成 右边radio的编辑项  
             // form为radio的value formTitle为radio的label
             $f.append(form)
-            $f.append(formTitle, formTitle)
-            console.log(form, );
+            $f.append(formDelBtn)
+            $f.append(formTitle)
+            
 
             // 生成radio子集
             this.rule.some(item => {
               // 如果当前有options参数 说明是radio
               if(item._data.field === id && item._data.options) {
                 // console.log('form', form);
-                
+                // 添加子集
                 item._data.options.push(
                   {
                     value: form._data.value, 
@@ -146,7 +164,6 @@ const mixin = {
               }
               
             })
-            console.log(this.rule);
             
             
           },
@@ -160,39 +177,80 @@ const mixin = {
     getInitRadios(id) {
       let that = this
       // 初始option
-      let arr = [
-        {
+      let arr = []
+      for (let i = 1; i <= this.initRadiosNum; i++) {
+        arr.push({
           forms: [
-            maker.input('option1', 'option1-' + id, 'option1').event({
+            maker.input(`option${i}`, `option${i}-${id}`, `option${i}`).event({
               change(e) {
-                that.bindModel(e, 'options', id, 'option1-' + id)
+                that.bindModel(e, `options`, id, `option${i}-${id}`)
               }
             }),
-            maker.input(`label1`, `label1-${id}`, `option1-label1`).event({
+            maker.input(`label${i}`, `label${i}-${id}`, `option${i}-label${i}`).event({
               change(e) {
-                that.bindModel(e, 'options', id, `label1-${id}`)
+                that.bindModel(e, `options`, id, `label${i}-${id}`)
               }
             }).col({span: 10}),
-          ] 
-        },
-        {
-          forms: [
-            maker.input('option2', 'option2-' + id, 'option2').event({
-              change(e) {
-                that.bindModel(e, 'filed', id, 'option2-' + id)
+            maker.create('i-button').domProps({
+              innerHTML: '删除',
+              qinjianfei: `btn-${i}`
+            }).props({
+              type: "success",
+              size: "default",
+              htmlType: "button",
+              show: true,
+              field: `btn-${i}`
+            }).name(`btn-${i}`).on({
+              click: (e) => {
+                let btns = that.$refs.fc2.$f.component()
+                console.log(e);
+                
+                that.handleClickDelRadio(e, btns)
+                
+                
+                
               }
-            }),
-            maker.input(`label2`, `label2-${id}`, `option2-label2`).event({
-              change(e) {
-                that.bindModel(e, 'filed', id, `label2-${id}`)
-              }
-            }).col({span: 10}),
+            })
           ] 
-        },
-      ]
+        })
+      }
       this.radios = arr
       return this.radios
 
+    },
+    // 删除 radio 子集
+    handleClickDelRadio(e, components) {
+      // 获取该dom的自定义属性
+      let name = e.target.qinjianfei
+      let data = {}
+      data[name] = name
+      // this.$nextTick(() => {
+        let i = this.getId(data)
+      console.log(i);
+        // 删除 
+        this.$refs.fc2.$f.removeField(`option${i.id}-${this.id}`)
+        this.$refs.fc2.$f.removeField(`label${i.id}-${this.id}`)
+        this.$nextTick(() => {
+          this.$refs.fc2.$f.removeField(`btn-${i.id}`)
+          e.target.remove()
+        })
+        
+        // 同步删除 生成的radio子集
+        this.rule.forEach(item => {
+          if(item._data.field === this.id && item._data.options) {
+            item._data.options.forEach((key, index) => {
+              // 只要符合条件 删除该元素
+              if(key.valueKey === `option${i.id}-${this.id}`) {
+                item._data.options.splice(index, 1)
+              }
+              
+            })
+          }
+        })
+      // })
+      
+      
+      
     },
     getPram(type, data) {
       let o = this.getId(data)
@@ -218,21 +276,25 @@ const mixin = {
             valueKey: '', 
             labelKey: ''
           }
+          
           // 判断是否是label
           radio.forms.forEach((form, i) => {
             console.log(form);
-            
-            if(!form._data.title.includes('label')) {
+            // if(!form._data.title) return false
+            if(form._data.title && !form._data.title.includes('label')) {
               radioParams.value = data[form._data.field]
               radioParams.valueKey = form.__field__
-            }else {
+            }else if(form._data.title && form._data.title.includes('label')){
               radioParams.label = data[form._data.field]
               radioParams.labelKey = form.__field__
             }
             
           })
+          
           basic.radios.push(radioParams)
         })
+        console.log(basic);
+        
         // 缓存字段
         this.basicFiled = basic
         return this.basicFiled

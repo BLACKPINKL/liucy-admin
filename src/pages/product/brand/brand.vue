@@ -1,7 +1,9 @@
 <template>
   <div>
+    <Button type="warning" @click="handleClickDel">删除</Button>
     品牌添加
-    <formCreate ref="fc" :rule="rule" :option="option"/>
+    <formCreate  ref="fc" :rule="rule" :option="option"/>
+
   </div>
 </template>
 
@@ -46,6 +48,12 @@ export default {
     // let maker = maker.input('field','title','value',{disabled:true})
     // console.log(maker);
     
+  },
+  methods: {
+    handleClickDel() {
+      const $f = this.$refs.fc.$f
+         let rule =$f.removeField('created_at')
+    }
   }
 }
 </script>

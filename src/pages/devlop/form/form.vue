@@ -88,13 +88,7 @@
     computed: {
       
     },
-    watch: {
-      rule(val) {
-        this.$nextTick(() => {
-          this.f = this.$refs['fc' + this.id][0].$f
-        })
-      }
-    },
+    
     methods: {
       // 生成form
       addFormDy(type) {
@@ -105,9 +99,6 @@
           let data = this.formData
           let form = this.getForm(type, data)
           this.rule.push(form)
-          
-          
-          // this.f = this.$refs['fc' + this.id][0].$f
         })
         
         
@@ -180,7 +171,7 @@
           
       },
 
-
+      
       handleClickBtn() {
         console.log(this.rule);
         
@@ -193,14 +184,16 @@
 
 <style lang="less">
   .form_split {
-    height: 800px;
+    min-height: 100vh;
     width: 100%;
     border: 1px solid #dcdee2;
-    background: #5cadff;
+    
   }
 
   .demo-split-pane {
     padding: 10px;
+    min-height: 100%;
+    background: #5cadff;
     
   }
   // 重置cell样式
