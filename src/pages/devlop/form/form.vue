@@ -11,7 +11,9 @@
         <div slot="left" class="demo-split-pane">
           <CellGroup @on-click="handleClickForm">
             <Cell title="" :name="formRule._data.field" v-for="formRule in rule" :key="formRule._data.field">
+              <Button type="success" @click="handleClickFormDel(formRule._data.field)">删除</Button>
               <formCreate :option="{submitBtn: false}" :ref="'fc' + formRule._data.field" :rule="[formRule]"/>
+
             </Cell>
           </CellGroup>
           
@@ -85,6 +87,23 @@
         f: null
       }
     },
+    watch: {
+      // 监听表单数组 
+      rule(val) {
+        // 一旦数组为空 清空右边栏编辑区
+        if(!val.length) {
+          console.log('dsada');
+          
+          // this.$refs.fc2.$f.destroy()
+          this.radios = []
+          this.editRule = []
+          this.activeRule = []
+          this.i = 1
+          this.id = ''
+          // this.$refs.fc2.$f.resetFields()
+        }
+      }
+    },
     computed: {
       
     },
@@ -92,14 +111,26 @@
     methods: {
       // 生成form
       addFormDy(type) {
-        let $f = this.$refs.fc2.$f
-        
         this.$nextTick(() => {
+          let $f = this.$refs.fc2.$f
+          // 判断当前生成的表单项是否是radio的一种 如果是则显示添加按钮
+          if(type !== 'radio' && type !== 'checkbox' && type !== 'select') $f.hidden(true, 'addBtn')
+          else $f.hidden(false, 'addBtn')
+
+          // 获取该表单data
           this.formData = $f.formData()
           let data = this.formData
+          // 获取表单
           let form = this.getForm(type, data)
+          // 添加
           this.rule.push(form)
         })
+        
+
+          
+        
+         
+        
         
         
       },
@@ -113,15 +144,32 @@
         if(filter.length) this.activeRule = filter
         
       },
+      // 删除表单
+      handleClickFormDel(field) {
+        this.$nextTick(() => {
+          console.log(field);
+          let $f = this.$refs[`fc${field}`][0].$f
+          this.rule.some((item, i) => {
+            if(item._data.field === field) {
+              $f.removeField(field)
+              this.rule.splice(i, 1)
+              // if(!this.rule.length) $f.destroy()
+              return true
+            }
+          })
+          
+        })
+        
+
+      },
       // 点击要生成的某一个表单项 单行文本
       handleClick(item) {
-        let that = this
         let id = randomId(4)
         this.id = id
         
         this.$nextTick(() => {
-          that.editRule.push(
-            that.getFormActive(id, item.type)
+          this.editRule.push(
+            this.getFormActive(id, item.type)
           )
           this.setActiveRule(id)
           this.addFormDy(item.type)

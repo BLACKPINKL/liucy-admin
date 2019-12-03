@@ -1,6 +1,7 @@
 import {
   maker
 } from '@form-create/iview'
+import {deepCopy} from 'utils'
 // 需要创建的表单项
 const mixin = {
   data() {
@@ -102,8 +103,9 @@ const mixin = {
           type: "primary",
           size: "large",
           htmlType: "button",
+          field: 'addBtn',
           show: true
-        }).on({
+        }).name('addBtn').on({
           click: () => {
             let i = ++that.initRadiosNum
             let $f = that.$refs.fc2.$f
