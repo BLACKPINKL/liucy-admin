@@ -22,20 +22,54 @@ const mixin = {
       let prams = this.getPram(type, data)
       console.log('prams', prams);
       let o = {
-        input : maker.input(prams.label, prams.filed, prams.value).col({
+        input : maker.input(prams.label, prams.filed, prams.value).props({
+          placeholder: prams.place,
+        }).col({
           span: parseInt(prams.width),
-        }),
+          
+        }).validate([{
+          required: prams.required,
+          message: `请输入${prams.label}`,
+          trigger: 'blur'
+        }]),
         textarea: maker.input(prams.label, prams.filed, prams.value).props({
           type,
+          placeholder: prams.place,
           autosize: {
             minRows: 5,
             maxRows: 9
           }
         }).col({
           span: parseInt(prams.width)
-        }),
-        radio: maker.radio(prams.label, prams.filed, prams.value).options(this.basicFiled.radios),
-        select: [],
+        }).validate([{
+          required: prams.required,
+          message: `请输入${prams.label}`,
+          trigger: 'blur'
+        }]),
+        radio: maker.radio(prams.label, prams.filed, prams.value).options(this.basicFiled.radios).validate([{
+          required: prams.required,
+          message: `请选择${prams.label}`,
+          trigger: 'blur'
+        }]),
+        checkbox: maker.checkbox(prams.label, prams.filed, [prams.value])
+        .options(this.basicFiled.radios)
+        .validate([{
+          type: 'array',
+          required: prams.required,
+          message: `请选择${prams.label}`,
+          trigger: 'blur'
+        }]),
+        select: maker.select(prams.label, prams.filed, [prams.value]).
+        props({
+          placeholder: prams.place,
+        })
+        .options(this.basicFiled.radios)
+        .validate([{
+          type: 'array',
+          required: prams.required,
+          message: `请选择${prams.label}`,
+          trigger: 'blur'
+        }]),
         DatePicker: []
       }
       
@@ -56,7 +90,7 @@ const mixin = {
             
           }
         }),
-        maker.input('label', 'label-' + id, type).event({
+        maker.input('标题', 'label-' + id, type).event({
           change(e) {
             that.bindModel(e, 'title', id)
             
@@ -74,7 +108,23 @@ const mixin = {
             
           }
         }),
+        maker.input('占位内容', 'place-' + id, '请输入xxx').event({
+          change(e) {
+            that.bindModel(e, 'placeholder', id)
+            
+          }
+        }),
+        maker.checkbox('是否必填', 'required-' + id, [false]).options([
+          {value: true, label: ''}
+        ]).event({
+          'on-change': (e) => {
+            that.bindModel(e, 'required', id)
+            console.log(e.length);
+            
+          }
+        }),
       ]
+      let radio = this.getRadio(basic, id)
       let o = {
         input: {
           key: id,
@@ -86,9 +136,18 @@ const mixin = {
         },
         radio: {
           key: id,
-          form: this.getRadio(basic, id)
-        }
+          form: radio
+        },
+        checkbox: {
+          key: id,
+          form: radio
+        },
+        select: {
+          key: id,
+          form: radio
+        },
       }
+      
       return o[type]
     },
     // radio
@@ -183,16 +242,21 @@ const mixin = {
       for (let i = 1; i <= this.initRadiosNum; i++) {
         arr.push({
           forms: [
+            // option的值
             maker.input(`option${i}`, `option${i}-${id}`, `option${i}`).event({
               change(e) {
                 that.bindModel(e, `options`, id, `option${i}-${id}`)
               }
             }),
+
+            // option的label
             maker.input(`label${i}`, `label${i}-${id}`, `option${i}-label${i}`).event({
-              change(e) {
+              change(e) { 
                 that.bindModel(e, `options`, id, `label${i}-${id}`)
               }
             }).col({span: 10}),
+
+            // 删除option按钮
             maker.create('i-button').domProps({
               innerHTML: '删除',
               qinjianfei: `btn-${i}`
@@ -217,7 +281,7 @@ const mixin = {
         })
       }
       this.radios = arr
-      return this.radios
+      return arr
 
     },
     // 删除 radio 子集
@@ -254,21 +318,25 @@ const mixin = {
       
       
     },
+    // 获取对应表单所需要的属性值
     getPram(type, data) {
       let o = this.getId(data)
+      
       // 基础字段
       let basic = {
         label: data['label-' + o.id], 
         filed: data['filed-' + o.id], 
         value: data['value-' + o.id] || '',
-        width: data['width-' + o.id]
+        width: data['width-' + o.id],
+        place: data['place-' + o.id] || '',
+        required: data['required-' + o.id][0] || false,
       }
 
 
       if(type === 'input' || type === 'textarea') return basic
       console.log('data', data);
       
-      if(type === 'radio'){
+      if(type === 'radio' || type === 'checkbox' || type === 'select'){
         
         basic.radios = []
         this.radios.forEach(radio => {
@@ -284,6 +352,7 @@ const mixin = {
             console.log(form);
             // if(!form._data.title) return false
             if(form._data.title && !form._data.title.includes('label')) {
+              // 如果当前是多选框 需要把值放入数组中
               radioParams.value = data[form._data.field]
               radioParams.valueKey = form.__field__
             }else if(form._data.title && form._data.title.includes('label')){
@@ -301,7 +370,6 @@ const mixin = {
         this.basicFiled = basic
         return this.basicFiled
       }
-      // if(type === 'select')
       // if(type === 'DatePicker')
     },
     getId(data) {

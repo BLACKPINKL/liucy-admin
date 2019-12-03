@@ -33,7 +33,10 @@ export default {
           type:'datePicker',
           field:'created_at',
           title:'创建时间'
-        } 
+        },
+        maker.checkbox('是否必填', 'required',[false]).options([
+          {value: true, label: ''}
+        ]) 
      ],
      option:{
        //表单提交事件

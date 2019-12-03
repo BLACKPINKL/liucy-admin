@@ -12,7 +12,7 @@
           <CellGroup @on-click="handleClickForm">
             <Cell title="" :name="formRule._data.field" v-for="formRule in rule" :key="formRule._data.field">
               <Button type="success" @click="handleClickFormDel(formRule._data.field)">删除</Button>
-              <formCreate :option="{submitBtn: false}" :ref="'fc' + formRule._data.field" :rule="[formRule]"/>
+              <formCreate :option="{submitBtn: false, form: {labelWidth: 80, labelPosition: 'right'}}" :ref="'fc' + formRule._data.field" :rule="[formRule]"/>
 
             </Cell>
           </CellGroup>
@@ -54,7 +54,10 @@
           submitBtn: false,
           resetBtn: false
         },
+        // 右边栏编辑区 
         editRule: [],
+        // 根据选中不同的的表单从editRule中获取对应的编辑区 
+        // 该数组的只能存在一个元素
         activeRule: [],
         formTag: [{
             key: '单行文本',
@@ -70,7 +73,7 @@
           },
           {
             key: '多选框',
-            type: 'textarea'
+            type: 'checkbox'
           },
           {
             key: '选择器',
@@ -82,9 +85,11 @@
           },
         ],
         formData: {},
-        i: 1,
+        actived: '',
         id: '',
-        f: null
+        f: null,
+        ids: []
+
       }
     },
     watch: {
@@ -98,7 +103,6 @@
           this.radios = []
           this.editRule = []
           this.activeRule = []
-          this.i = 1
           this.id = ''
           // this.$refs.fc2.$f.resetFields()
         }
@@ -125,14 +129,6 @@
           // 添加
           this.rule.push(form)
         })
-        
-
-          
-        
-         
-        
-        
-        
       },
       // 获取点击对应的form
       setActiveRule(key) {
@@ -166,8 +162,11 @@
       handleClick(item) {
         let id = randomId(4)
         this.id = id
-        
+        // 缓存当前选中值
+        this.actived = item.type
         this.$nextTick(() => {
+          
+          
           this.editRule.push(
             this.getFormActive(id, item.type)
           )
@@ -178,11 +177,23 @@
       },
       // 点击生成的某一个表单 切换到对应的表单项
       handleClickForm(key) {
-        this.setActiveRule(key)
+        this.$nextTick(() => {
+          let $f = this.$refs['fc' + key][0].$f
+          // console.log(this.$refs['fc' + key]);
+          // 获取当前点击的表单类型
+          let type = $f.getRule(key).type
+        
+          this.actived = type
+          this.setActiveRule(key)
+        })
+        
         
       },
+      // getFormTypeInId(id) {
+      //   this.rule
+      // },
       bindModel(e, filed, id, key) {
-        let val = e.target.value
+        let val = e.target && e.target.value
         let $f = this.$refs['fc' + id][0].$f
         
         console.log('$f', e);
@@ -207,23 +218,48 @@
           
           return
         }
+        if(filed === 'placeholder') {
+          update['props'] = { [filed]: val}
+        }
+
+        if(filed === 'required') {
+          console.log('re', Boolean(e.length));
+          
+          update['validate'] = [{ [filed]: Boolean(e.length)}]
+        }
         // 如果更改宽度
         if(filed == 'span'){
           update['col'] = {
-            span: parseInt(val)
+            [filed]: parseInt(val)
           }
+        }
+        if(this.actived === ('checkbox' || 'select')) {
+          console.log('jinlai');
+          
+          update[filed] = [val]
         }
         else update[filed] = val
         
         $f.updateRule(id, update)
+        console.log(this.rule);
           
       },
 
       
       handleClickBtn() {
-        console.log(this.rule);
+        // 生成最终json
+        // this.$nextTick(() => {
+          let json = {}
+          this.rule.forEach((item) => {
+            let $f = this.$refs['fc' + item.__field__][0].$f
+            
+            json[item.__field__] = $f.toJson()
+            console.log(JSON.parse(json[item.__field__]));
+            
+          })
+          // console.log('json', jsonjson);
+        // })
         
-        this.formData['value-' + this.id] = this.i
         
       }
     }
@@ -247,5 +283,8 @@
   // 重置cell样式
   .ivu-cell-main {
     width: 100% !important;
+  }
+  .ivu-cell {
+    overflow: visible;
   }
 </style>
