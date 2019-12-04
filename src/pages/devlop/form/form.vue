@@ -197,7 +197,7 @@
         let val = e.target && e.target.value
         let $f = this.$refs['fc' + id][0].$f
         
-        console.log('$f', e);
+        console.log('$f', $f);
         let update = {}
         // 说明是改某一个子集
         if(filed === 'options') {
@@ -239,31 +239,39 @@
           
           update[filed] = [val]
         }
-        else update[filed] = val
+        // 修改字段名
+        if(filed === 'field') {
+          $f.changeField(id, val)
+          
+          $f.reload()
+          return 
+        }
         
         $f.updateRule(id, update)
+        
         console.log(this.rule);
           
       },
 
       
       handleClickBtn() {
+        console.log(this.rule);
+        
         // 生成最终json
         // this.$nextTick(() => {
-          let data = []
-          this.rule.forEach((item) => {
-            let json = {
-              data: ''
-            }
-            let $f = this.$refs['fc' + item.__field__][0].$f
-            //  获取组件规则并转换json
-            json.data = $f.toJson()
+          // let data = []
+          // this.rule.forEach((item) => {
+          //   let json = {
+          //     data: ''
+          //   }
+          //   let $f = this.$refs['fc' + item.__field__][0].$f
+          //   //  获取组件规则并转换json
+          //   json.data = $f.toJson()
             
-            data.push(json)
-          })
-          console.log(data);
+          //   data.push(json)
+          // })
           
-          // addForm({name: 'test', forms: data}).then(res => {
+          // addForm({name: 'test2', forms: JSON.stringify(data)}).then(res => {
           //   console.log(res);
             
           // })

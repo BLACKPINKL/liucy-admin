@@ -86,7 +86,7 @@ const mixin = {
       let basic = [
         maker.input('字段名', 'filed-' + id, id).event({
           change(e) {
-            that.bindModel(e, 'filed', id)
+            that.bindModel(e, 'field', id)
             
           }
         }),
@@ -321,6 +321,7 @@ const mixin = {
     // 获取对应表单所需要的属性值
     getPram(type, data) {
       let o = this.getId(data)
+      console.log('data', data);
       
       // 基础字段
       let basic = {
