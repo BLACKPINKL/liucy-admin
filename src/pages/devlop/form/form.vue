@@ -43,6 +43,7 @@
   } from '@form-create/iview'
   import {randomId} from 'utils'
   import mixin from './mixin.js'
+  import {addForm} from 'service/form-service'
   export default {
     name: 'devlop_form',
     mixins: [mixin],
@@ -249,14 +250,23 @@
       handleClickBtn() {
         // 生成最终json
         // this.$nextTick(() => {
-          let json = {}
+          let data = []
           this.rule.forEach((item) => {
+            let json = {
+              data: ''
+            }
             let $f = this.$refs['fc' + item.__field__][0].$f
+            //  获取组件规则并转换json
+            json.data = $f.toJson()
             
-            json[item.__field__] = $f.toJson()
-            console.log(JSON.parse(json[item.__field__]));
-            
+            data.push(json)
           })
+          console.log(data);
+          
+          // addForm({name: 'test', forms: data}).then(res => {
+          //   console.log(res);
+            
+          // })
           // console.log('json', jsonjson);
         // })
         
