@@ -70,7 +70,33 @@ const mixin = {
           message: `请选择${prams.label}`,
           trigger: 'blur'
         }]),
-        DatePicker: []
+        datePicker: maker.date(prams.label,prams.filed, new Date()).props({
+          type: 'datetime',
+          startDate: new Date()
+        }).validate([{
+          type: 'date',
+          required: prams.required,
+          message: `请选择${prams.label}`,
+          trigger: 'blur'
+        }]),
+        // 上传
+        upload: maker.upload(prams.label, prams.filed, [])
+        .props({
+          action: prams.action,
+          multiple: true,
+          type: 'select',
+          uploadType: 'image',
+          name: prams.filed,
+          onSuccess(res,file) {
+            console.log('upload success', res, file);
+            
+          }
+        }).validate({
+          required: prams.required,
+          type: 'array',
+          message: '请上传图片',
+          trigger: 'change'
+        }),
       }
       
       
@@ -79,7 +105,7 @@ const mixin = {
       
       return o[type]
     },
-
+    // 获取表单编辑区所对应的表单
     getFormActive(id, type) {
       let that = this
       // 公共部分
@@ -119,12 +145,34 @@ const mixin = {
         ]).event({
           'on-change': (e) => {
             that.bindModel(e, 'required', id)
-            console.log(e.length);
             
           }
         }),
       ]
       let radio = this.getRadio(basic, id)
+
+
+      // 如果是日期 需要把默认的value框改成日期选择框
+      if(type === 'datePicker') {
+        basic[3] = maker.date('默认值', 'value-' + id, new Date()).props({
+          type: 'datetime',
+          startDate: new Date()
+        }).event({
+          change(e) {
+            that.bindModel(e, 'value', id)
+            
+          }
+        })
+      }
+      if(type === 'upload') {
+        basic[3] = maker.input('上传地址', 'action-' + id, '文件上传地址').event({
+          change(e) {
+            that.bindModel(e, 'action', id)
+            
+          }
+        })
+        
+      }
       let o = {
         input: {
           key: id,
@@ -146,6 +194,14 @@ const mixin = {
           key: id,
           form: radio
         },
+        datePicker: {
+          key: id,
+          form: basic,
+        },
+        upload: {
+          key: id,
+          form: basic,
+        }
       }
       
       return o[type]
@@ -334,7 +390,7 @@ const mixin = {
       }
 
 
-      if(type === 'input' || type === 'textarea') return basic
+      if(type === 'input' || type === 'textarea' || type === 'datePicker') return basic
       console.log('data', data);
       
       if(type === 'radio' || type === 'checkbox' || type === 'select'){
@@ -371,7 +427,12 @@ const mixin = {
         this.basicFiled = basic
         return this.basicFiled
       }
-      // if(type === 'DatePicker')
+
+      if(type === 'upload') {
+        delete basic.value
+        basic['action'] = data['action-' + o.id]
+        return basic
+      }
     },
     getId(data) {
       // 获取id

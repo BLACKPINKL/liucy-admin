@@ -51,15 +51,25 @@ export const constantsRoutes =  [
     name: 'devlop',
     children: [
       {
-        path: 'devlop/form',
-        component: () => import('pages/devlop/form'),
-        name: 'product_form',
+        path: 'add_form',
+        component: () => import('pages/devlop/form/add'),
+        name: 'devlop_add_form',
         meta: {
           title: '添加表单',
           icon: 'ios-search',
           noCache: true
         }
-      }
+      },
+      {
+        path: 'get_form',
+        component: () => import('pages/devlop/form/get'),
+        name: 'devlop_get_form',
+        meta: {
+          title: '表单管理',
+          icon: 'ios-search',
+          noCache: true
+        }
+      },
     ]
   },
   

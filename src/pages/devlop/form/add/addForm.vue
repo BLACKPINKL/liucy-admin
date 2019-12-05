@@ -1,7 +1,7 @@
 <template>
   <div>
     <Row>
-      <Col :span="2" v-for="item in formTag" :key="item.key">
+      <Col :span="1" v-for="item in formTag" :key="item.key">
         <Tag @click.native="handleClick(item)" color="primary">{{item.key}}</Tag>
       </Col>
 
@@ -57,7 +57,7 @@
   import mixin from './mixin.js'
   import {addForm} from 'service/form-service'
   export default {
-    name: 'devlop_form',
+    name: 'devlop_add_form',
     mixins: [mixin],
     data() {
       return {
@@ -94,7 +94,11 @@
           },
           {
             key: '日期时间选择器',
-            type: 'DatePicker'
+            type: 'datePicker'
+          },
+          {
+            key: '上传文件',
+            type: 'upload'
           },
         ],
         formData: {},
@@ -207,7 +211,7 @@
       // getFormTypeInId(id) {
       //   this.rule
       // },
-      bindModel(e, filed, id, key) {
+      bindModel(e, filed, id, key = '') {
         let val = e.target && e.target.value
         let $f = this.$refs['fc' + id][0].$f
         
@@ -233,7 +237,7 @@
           
           return
         }
-        if(filed === 'placeholder') {
+        if(filed === 'placeholder' || filed === 'action') {
           update['props'] = { [filed]: val}
         }
 
@@ -248,11 +252,19 @@
             [filed]: parseInt(val)
           }
         }
+       
         // 如果当前选中的表单为 多选框和选择器 需要把值放入数组中
         if(this.actived === ('checkbox' || 'select')) {
           console.log('jinlai');
           
           update[filed] = [val]
+        }
+        // 如果是日期 直接复制当前e参数
+        if(this.actived === 'datePicker') {
+          update[filed] = e
+        }
+        if(this.actived === 'upload') {
+          update['props'] = {name: val}
         }
         // 反之正常赋值
          else update[filed] = val
@@ -318,6 +330,9 @@
     width: 100% !important;
   }
   .ivu-cell {
+    overflow: visible;
+  }
+  .ivu-tabs {
     overflow: visible;
   }
 </style>

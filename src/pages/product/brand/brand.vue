@@ -22,14 +22,14 @@ export default {
         
      ],
      option:{
-       //表单提交事件
-       onSubmit:function (formData) {
-         console.log(formData);
+       onSubmit(data) {
+         console.log(data);
          
        }
      },
-     i: 1
+      i: 1
     }
+   
   },
   mounted() {
     // let maker = maker.input('field','title','value',{disabled:true})
@@ -65,12 +65,13 @@ export default {
       
     },
     handleClickDel() {
-      const $f = this.$refs.fc.$f
-      let rule =$f.removeField('created_at')
+      console.log(this.rule);
+      // const $f = this.$refs.fc.$f
+      // let rule =$f.removeField('created_at')
     },
     
     handleClickGetForm() {
-      getForm({name: 'qin'}).then(res => {
+      getForm({name: 'upload'}).then(res => {
        
         this.rule = res.forms
       })
