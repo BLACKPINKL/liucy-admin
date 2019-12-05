@@ -86,7 +86,7 @@ const mixin = {
       let basic = [
         maker.input('字段名', 'filed-' + id, id).event({
           change(e) {
-            that.bindModel(e, 'field', id)
+            that.bindModel(e, 'filed', id)
             
           }
         }),

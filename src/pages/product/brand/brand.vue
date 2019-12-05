@@ -19,10 +19,7 @@ export default {
   data() {
     return {
       rule:[
-        maker.input('商品名称', 'goods_name', 'iphone').props({
-          placeholder: '请输入商品名称',
-          width: 300
-        })
+        
      ],
      option:{
        //表单提交事件
@@ -71,20 +68,11 @@ export default {
       const $f = this.$refs.fc.$f
       let rule =$f.removeField('created_at')
     },
-    // 解析json格式并返回数据
-    getRule(res) {
-      let data = []
-      res.forms.forEach(item => {
-        // console.log();
-        
-        data = data.concat(...JSON.parse(item.data))
-      })
-      return data
-    },
+    
     handleClickGetForm() {
-      getForm({name: 'test2'}).then(res => {
+      getForm({name: 'qin'}).then(res => {
        
-        this.rule = this.getRule(res)
+        this.rule = res.forms
       })
     }
   }

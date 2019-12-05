@@ -1,10 +1,28 @@
 <template>
   <div>
     <Row>
-      <Col :span="Math.ceil(24 / formTag.length)" v-for="item in formTag" :key="item.key">
-      <Tag @click.native="handleClick(item)" color="primary">{{item.key}}</Tag>
+      <Col :span="2" v-for="item in formTag" :key="item.key">
+        <Tag @click.native="handleClick(item)" color="primary">{{item.key}}</Tag>
+      </Col>
+
+      <Col span="12" class="form_edit_right">
+      <div class="form_edit_box">
+        <Button type="primary" @click="handleClickBtn">
+          生成表单
+        </Button>
+      </div>
+        <div class="form_edit_box">
+          <Form style="width: 100%" ref="formInline" :model="form" :rules="{name: [{ required: true, message: '请填写该表单唯一名', trigger: 'change' }]}">
+            <FormItem label="表单名" prop="name" style="margin-bottom: 2px">
+              <Input type="text" v-model="form.name" style="width: 200px" placeholder="Username">
+              </Input>
+            </FormItem>
+          </Form>
+        </div>
+        
       </Col>
     </Row>
+    
     <Row class="form_split">
 
       <Split v-model="split1" >
@@ -27,13 +45,7 @@
         </div>
       </Split>
     </Row>
-    <Row>
-      <Col>
-      <Button type="primary" @click="handleClickBtn">
-        阿萨德
-      </Button>
-      </Col>
-    </Row>
+    
   </div>
 </template>
 
@@ -88,9 +100,11 @@
         formData: {},
         actived: '',
         id: '',
-        f: null,
-        ids: []
-
+        // 服务端所需表单数据
+        form: {
+          name: '',
+          forms: ''
+        }
       }
     },
     watch: {
@@ -234,57 +248,58 @@
             [filed]: parseInt(val)
           }
         }
+        // 如果当前选中的表单为 多选框和选择器 需要把值放入数组中
         if(this.actived === ('checkbox' || 'select')) {
           console.log('jinlai');
           
           update[filed] = [val]
         }
-        // 修改字段名
-        if(filed === 'field') {
-          $f.changeField(id, val)
-          
-          $f.reload()
-          return 
-        }
+        // 反之正常赋值
+         else update[filed] = val
         
         $f.updateRule(id, update)
-        
-        console.log(this.rule);
           
       },
 
-      
-      handleClickBtn() {
-        console.log(this.rule);
-        
+      getFormJson() {
         // 生成最终json
-        // this.$nextTick(() => {
-          // let data = []
-          // this.rule.forEach((item) => {
-          //   let json = {
-          //     data: ''
-          //   }
-          //   let $f = this.$refs['fc' + item.__field__][0].$f
-          //   //  获取组件规则并转换json
-          //   json.data = $f.toJson()
-            
-          //   data.push(json)
-          // })
+        let data = []
+        this.rule.forEach((item) => {
           
-          // addForm({name: 'test2', forms: JSON.stringify(data)}).then(res => {
-          //   console.log(res);
-            
-          // })
-          // console.log('json', jsonjson);
-        // })
-        
-        
+          let $f = this.$refs['fc' + item.__field__][0].$f
+          // 浅拷贝一份规则
+          let o = Object.assign({}, $f.model()[item.__field__])
+          // 将真实的字段名赋值
+          o.field = o.filed
+          data.push(o)
+        })
+        return JSON.stringify(data)
+      },
+      handleClickBtn() {
+        if(!this.form.name) return this.$Message.warning('请填写表单自定义名')
+        let forms = this.getFormJson()
+        this.form.forms = forms
+        // 发送至服务端
+        addForm(this.form).then(res => {
+          console.log(res);
+          this.$Message.success(res)
+        })
       }
     }
   }
 </script>
 
 <style lang="less">
+  .form_edit_right {
+    display: flex;
+    justify-content: space-around;
+    align-items:flex-start;
+  }
+  .form_edit_box {
+    display: flex;
+    width: 50%;
+    justify-content: center;
+  }
   .form_split {
     min-height: 100vh;
     width: 100%;
@@ -295,7 +310,7 @@
   .demo-split-pane {
     padding: 10px;
     min-height: 100%;
-    background: #5cadff;
+    // background: #5cadff;
     
   }
   // 重置cell样式
