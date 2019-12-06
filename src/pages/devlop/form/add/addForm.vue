@@ -53,7 +53,7 @@
   import {
     maker
   } from '@form-create/iview'
-  import {randomId} from 'utils'
+  import {randomId, deepCopy} from 'utils'
   import mixin from './mixin.js'
   import {addForm} from 'service/form-service'
   export default {
@@ -283,12 +283,15 @@
         this.rule.forEach((item) => {
           
           let $f = this.$refs['fc' + item.__field__][0].$f
-          // 浅拷贝一份规则
-          let o = Object.assign({}, $f.model()[item.__field__])
+          // 深拷贝一份规则
+          let o = deepCopy($f.model()[item.__field__])
           // 将真实的字段名赋值
           o.field = o.filed
           data.push(o)
         })
+        
+        // 转换json 
+
         return JSON.stringify(data)
       },
       handleClickBtn() {
@@ -296,6 +299,8 @@
         let forms = this.getFormJson()
         this.form.forms = forms
         // 发送至服务端
+        console.log(this.rule, this.form);
+        
         addForm(this.form).then(res => {
           console.log(res);
           this.$Message.success(res)

@@ -86,20 +86,8 @@ const mixin = {
           multiple: true,
           type: 'select',
           uploadType: 'image',
-          name: prams.filed,
-          'on-success': function(res,file) {
-            console.log('upload success', res, file);
-            
-          },
-          'on-error': function(err,file) {
-            console.log('upload err', err, file);
-            
-          },
-          'on-preview': function(file) {
-            console.log('upload preview', file);
-            
-          },
-        }).validate({
+          name: prams.filed
+        }).emit('onSuccess').validate({
           required: prams.required,
           type: 'array',
           message: '请上传图片',

@@ -75,7 +75,8 @@ export default {
        
         this.rule = res.forms
       })
-    }
+    },
+    
   }
 }
 </script>
