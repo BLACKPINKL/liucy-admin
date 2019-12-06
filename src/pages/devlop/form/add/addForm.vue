@@ -215,7 +215,7 @@
         let val = e.target && e.target.value
         let $f = this.$refs['fc' + id][0].$f
         
-        console.log('$f', $f);
+        
         let update = {}
         // 说明是改某一个子集
         if(filed === 'options') {
@@ -238,6 +238,8 @@
           return
         }
         if(filed === 'placeholder' || filed === 'action') {
+          console.log('改了');
+          
           update['props'] = { [filed]: val}
         }
 
@@ -263,14 +265,16 @@
         if(this.actived === 'datePicker') {
           update[filed] = e
         }
-        if(this.actived === 'upload') {
+        if(this.actived === 'upload' && filed === 'filed') {
           update['props'] = {name: val}
+          update[filed] = val
         }
         // 反之正常赋值
          else update[filed] = val
         
         $f.updateRule(id, update)
-          
+        console.log(this.rule);
+        
       },
 
       getFormJson() {
