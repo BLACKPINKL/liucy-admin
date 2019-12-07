@@ -3,11 +3,11 @@ import err404 from 'pages/404'
 
 // 公共权限 
 export const constantsRoutes =  [
-  // {
-  //   path: '/login',
-  //   hidden: true,
-  //   component: () => import('pages/login/login')
-  // },
+  {
+    path: '/login',
+    hidden: true,
+    component: () => import('pages/login')
+  },
   {
     path: '/',
     redirect: 'product/brand',
