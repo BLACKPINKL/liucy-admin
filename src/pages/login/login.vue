@@ -64,11 +64,12 @@ export default {
     // 点击登录按钮
     handleSubmit() {
       let form = this.form
-      if(!form.account) return this.$Message.warning('请填写账号')
-      if(!form.password) return this.$Message.warning('请填写密码')
+      // if(!form.account) return this.$Message.warning('请填写账号')
+      // if(!form.password) return this.$Message.warning('请填写密码')
       // md5 加密
-      form.password = md5(form.password).toUpperCase()
+      // let md5Pass = md5(form.password).toUpperCase()
       // 登录请求
+      // login({account: form.account, password: md5Pass}).then(res => {
       login(form).then(res => {
         console.log('成功', res);
         
