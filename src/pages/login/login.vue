@@ -62,26 +62,28 @@ export default {
   
   methods: {
     // 点击登录按钮
-    handleSubmit() {
+    handleSubmit(e) {
       let form = this.form
-      // if(!form.account) return this.$Message.warning('请填写账号')
-      // if(!form.password) return this.$Message.warning('请填写密码')
+      if(!form.account) return this.$Message.warning('请填写账号')
+      if(!form.password) return this.$Message.warning('请填写密码')
       // md5 加密
-      // let md5Pass = md5(form.password).toUpperCase()
+      let md5Pass = md5(form.password).toUpperCase()
       // 登录请求
-      // login({account: form.account, password: md5Pass}).then(res => {
-      login(form).then(res => {
-        console.log('成功', res);
-        
-        // 校验不通过
-        // if(res.statusCode !== 10006) {
-        //   return this.$Message.warning(res.mes)
-        // }
-
-        // // setCookie('x_token', res.x_token)
-        // this.$router.push({path: '/'})
-      })
+      this.userLogin({account: form.account, password: md5Pass})
     },
+    userLogin(data) {
+      login(data).then(res => {
+        console.log('成功', res);
+        let tokenData = res.data
+        // 两小时过期时间
+        let expires = new Date(new Date().getTime() + 2 * 60 * 60 * 1000)
+        // 存入cookie
+        setCookie('token', tokenData.token, {expires})
+        // 跳转至首页
+        this.$router.push({path: '/'})
+        
+      })
+    }
     
   }
 }

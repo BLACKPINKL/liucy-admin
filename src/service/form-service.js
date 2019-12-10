@@ -18,7 +18,7 @@ export const getForm = (data) =>{
   // 获取表单
   return _getForm(data).then(res => {
     // 说明是上传组件
-    res.forms.some((item,i) => {
+    res.data.forms.some((item,i) => {
       // 添加成功回调以及失败回调
       if(item.type === 'upload') {
         // 添加成功回调以及失败回调
