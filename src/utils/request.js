@@ -27,7 +27,7 @@ axios.interceptors.response.use(res => {
 }, error => {
   
   const vue = new Vue()
-  if(error.response.data && error.response.data.errCode !== 10006) {
+  if(error.response.data && error.response.data.errCode !== 666) {
     // 服务端自定义错误
     let data = error.response.data
     vue.$Message.error(data.msg, 1500)
@@ -56,3 +56,6 @@ export const httpGet = (params) => {
     withCredentials: true
   })
 }
+
+
+

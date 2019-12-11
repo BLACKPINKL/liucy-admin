@@ -71,7 +71,7 @@ export default {
     },
     
     handleClickGetForm() {
-      getForm({name: 'upload'}).then(res => {
+      getForm({name: ''}).then(res => {
        console.log(res);
        
         this.rule = res.data.forms

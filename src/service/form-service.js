@@ -6,6 +6,23 @@ export const addForm = (data) => {
     data
   })
 }
+// 获取所有表单
+export const getFormAll = (data) => {
+  return httpGet({
+    url: `${host}/getAll`,
+    data
+  })
+}
+
+export const removeForm = (data) => {
+  return httpGet({
+    url: `${host}/delete`,
+    data
+  })
+}
+
+
+
 // 处理上传组件回调问题
 const _getForm = (data) => {
   return httpGet({
