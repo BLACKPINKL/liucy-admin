@@ -86,7 +86,10 @@ const mixin = {
           multiple: true,
           type: 'select',
           uploadType: 'image',
-          name: prams.filed
+          name: prams.filed,
+          data: {
+            fileField: prams.filed
+          }
         }).emit('onSuccess').validate({
           required: prams.required,
           type: 'array',

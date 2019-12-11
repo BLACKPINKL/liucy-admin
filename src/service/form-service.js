@@ -42,7 +42,7 @@ export const getForm = (data) =>{
         item.props['onSuccess'] = function(response, file) {
           // 将结果地址添加到value中
           
-          item.value.push(response)
+          item.value.push(response.data)
         }
         item.props['onError'] = function(err) {
           console.log('err', err);
@@ -54,4 +54,5 @@ export const getForm = (data) =>{
     return res
   })
 }
+
 

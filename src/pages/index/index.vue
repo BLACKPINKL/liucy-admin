@@ -108,7 +108,6 @@ export default {
     },
     handleLogout() {
       removeCookie('token')
-      removeCookie('x_token')
       this.$router.push({path: '/login'})
 
     },

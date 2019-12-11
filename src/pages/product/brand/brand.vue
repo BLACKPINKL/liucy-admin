@@ -1,87 +1,18 @@
 <template>
-  <div>
-    <Button type="warning" @click="handleClickDel">删除</Button>
-    <Button type="warning" @click="handleClickGetForm">获取</Button>
-    <Button type="warning" @click="handleClickUpdateForm">修改</Button>
-    品牌添加
-    <formCreate  ref="fc" :rule="rule" :option="option"/>
-
-  </div>
+    <div>
+      <router-view></router-view>
+    </div>
+    
+  
 </template>
 
 <script>
-//获取生成器
-import { maker } from '@form-create/iview'
-import {getForm} from 'service/form-service'
 export default {
   name: 'product_brand',
   
-  data() {
-    return {
-      rule:[
-        
-     ],
-     option:{
-       onSubmit(data) {
-         console.log(data);
-         
-       }
-     },
-      i: 1
-    }
-   
-  },
-  mounted() {
-    // let maker = maker.input('field','title','value',{disabled:true})
-    // console.log(maker);
-    
-  },
-  methods: {
-    handleClickUpdateForm() {
-      let field = (++this.i) + 'abc'
-      
-      // console.log(field);
-      
-      let $f = this.$refs.fc.$f
-      
-      $f.updateRule('goods_name', {field})
-
-      this.$nextTick(() => {
-        this.oldField = field
-        this.rule.forEach((item, i) => {
-          console.log(item._data.field, field);
-          
-          if(item._data.field === field) {
-            console.log('进来');
-            
-            $f.reload()
-            // this.rule[i] = 
-          }
-        })
-       
-        console.log(this.rule);
-      })
-      
-      
-    },
-    handleClickDel() {
-      console.log(this.rule);
-      // const $f = this.$refs.fc.$f
-      // let rule =$f.removeField('created_at')
-    },
-    
-    handleClickGetForm() {
-      getForm({name: ''}).then(res => {
-       console.log(res);
-       
-        this.rule = res.data.forms
-      })
-    },
-    
-  }
 }
 </script>
 
-<style lang="scss" scoped>
+<style>
 
 </style>

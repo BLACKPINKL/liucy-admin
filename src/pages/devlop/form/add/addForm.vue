@@ -254,6 +254,10 @@
             [filed]: parseInt(val)
           }
         }
+
+        if(filed === 'title') {
+          update['validate'] = [{ message: `请输入${val}`}]
+        }
        
         // 如果当前选中的表单为 多选框和选择器 需要把值放入数组中
         if(this.actived === ('checkbox' || 'select')) {
@@ -266,7 +270,7 @@
           update[filed] = e
         }
         if(this.actived === 'upload' && filed === 'filed') {
-          update['props'] = {name: val}
+          update['props'] = {name: val, data: {fileField: val}}
           update[filed] = val
         }
         // 反之正常赋值
