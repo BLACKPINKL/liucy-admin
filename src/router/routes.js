@@ -41,6 +41,17 @@ export const constantsRoutes =  [
             },
           },
           {
+            path: 'edit/:id',
+            component: () => import('pages/product/brand/edit'),
+            name: 'product_brand_edit',
+            meta: {
+              title: '编辑品牌',
+              icon: 'ios-search',
+              noCache: true,
+              hidden: true
+            },
+          },
+          {
             path: 'list',
             component: () => import('pages/product/brand/list'),
             name: 'product_brand_list',

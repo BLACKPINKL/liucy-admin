@@ -58,6 +58,7 @@
   import {addForm} from 'service/form-service'
   export default {
     name: 'devlop_add_form',
+    inject: ['reload'],
     mixins: [mixin],
     data() {
       return {
@@ -306,8 +307,10 @@
         console.log(this.rule, this.form);
         
         addForm(this.form).then(res => {
-          console.log(res);
-          this.$Message.success(res)
+          this.$Message.success('生成表单成功', 1500)
+          setTimeout(() => {
+            this.reload()
+          }, 1200)
         })
       }
     }

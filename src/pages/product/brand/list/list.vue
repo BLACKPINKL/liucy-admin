@@ -3,21 +3,22 @@
     <Table border :columns="columns" :data="data">
       <template slot-scope="{row, index}" slot="action">
         <Button type="primary" size="small" style="margin-right: 5px" @click="handleBrandEdit(row, index)">编辑</Button>
-        <Button v-if="row.brand_status ? false : true" type="error" size="small" @click="handleBrandRemove(row)">删除</Button>
+        <Button v-if="!row.brand_status" type="error" size="small" @click="handleBrandRemove(row)">删除</Button>
+        <Button v-else type="error" size="small" @click="handleBrandRecover(row)">恢复</Button>
       </template>
-      <template slot-scope="{row, index}" slot="logo">
-        <div v-viewer>
+      <template slot-scope="{row}" slot="logo">
+        <div v-viewer style="cursor: pointer">
           <img width="100" height="100" :src="row.brand_logo" alt="">
         </div>
         
       </template>
-      <template slot-scope="{row, index}" slot="status">
+      <template slot-scope="{row}" slot="status">
         <i-switch 
-        disabled
-        :value="row.brand_status ? false : true"
-        size="large"
-        true-color="#13ce66" 
-        false-color="#ff4949">
+          disabled
+          :value="row.brand_status ? false : true"
+          size="large"
+          true-color="#13ce66" 
+          false-color="#ff4949">
           <span slot="open">显示</span>
           <span slot="close">隐藏</span>
         </i-switch>
@@ -32,7 +33,7 @@ import 'viewerjs/dist/viewer.css'
 import Viewer from 'v-viewer'
 
 Vue.use(Viewer)
-import {getBrand, removeBrand} from 'service/brand-service'
+import {getBrand, removeBrand, recoverBrand} from 'service/brand-service'
 import mixin from 'utils/mixins'
 export default {
   name: 'product_brand_list',
@@ -86,6 +87,7 @@ export default {
     // 编辑品牌
     handleBrandEdit(row, i) {
       // TODO 
+      this.$router.push({path: `/product/brand/edit/${row.id}`})
     },
     // 删除品牌
     handleBrandRemove(row) {
@@ -96,6 +98,15 @@ export default {
         })
       })
       
+    },
+    // 恢复删除
+    handleBrandRecover(row) {
+      this.modalInstance('warning', '您确定要恢复该品牌吗？', () => {
+        recoverBrand({id: row.id}).then(res => {
+          this.$Message.success('恢复成功', 1500)
+          this.loadBrandList({})
+        })
+      })
     }
   }
 }

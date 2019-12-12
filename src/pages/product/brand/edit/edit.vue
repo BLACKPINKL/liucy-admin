@@ -1,6 +1,6 @@
 <template>
   <div>
-    <BrandDetail></BrandDetail>
+    <BrandDetail :isEdit="true"></BrandDetail>
   </div>
 </template>
 
@@ -10,7 +10,7 @@ export default {
   components: {
     BrandDetail
   },
-  name: 'product_brand_add'
+  name: 'product_brand_edit'
 }
 </script>
 

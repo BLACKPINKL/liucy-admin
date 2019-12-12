@@ -48,6 +48,7 @@ import Sidebar from 'components/sidebar'
 import { removeCookie } from 'utils/cookie'
 export default {
   name: 'layout',
+  
   components: {
     Sidebar
   },
