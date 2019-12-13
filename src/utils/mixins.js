@@ -1,4 +1,10 @@
+import {getForm} from 'service/form-service'
 const mixin = {
+  data() {
+    return {
+      rule: []
+    }
+  },
   methods: {
     // 模态框实例化
     modalInstance (type, content, callback) {
@@ -13,7 +19,19 @@ const mixin = {
         })`
       )
       
-    }
+    },
+
+    // 获取表单
+    loadForms(name) {
+      getForm({name}).then(res => {
+        this.rule = res.data.forms
+      })
+    },
+    msg(type, title) {
+      eval(`
+        this.$Message.${type}('${title}', 1500)
+      `)
+    },
   }
 }
 export default mixin

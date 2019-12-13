@@ -75,6 +75,37 @@ export const constantsRoutes =  [
       },
     ]
   },
+  {
+    path: '/article',
+    component: Layout,
+    meta: {
+      title: '文章模块',
+      icon: 'ios-stats-outline',
+    },
+    name: 'article',
+    children: [
+      {
+        path: 'add_cate',
+        component: () => import('pages/article/cate'),
+        name: 'article_add_cate',
+        meta: {
+          title: '添加分类',
+          icon: 'ios-search',
+          noCache: true
+        }
+      },
+      {
+        path: 'add_article',
+        component: () => import('pages/article/add'),
+        name: 'article_add',
+        meta: {
+          title: '添加文章',
+          icon: 'ios-search',
+          noCache: true
+        }
+      },
+    ]
+  },
   
   {
     path: '/devlop',
