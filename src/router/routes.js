@@ -138,7 +138,29 @@ export const constantsRoutes =  [
       },
     ]
   },
-  
+
+  {
+    path: '/test',
+    component: Layout,
+    meta: {
+      title: '测试页',
+      icon: 'ios-stats-outline',
+    },
+    name: 'test',
+    children: [
+      {
+        path: 'index',
+        component: () => import('pages/test'),
+        name: 'test_index',
+        meta: {
+          title: '测试页',
+          icon: 'ios-search',
+          noCache: true
+        }
+      },
+      
+    ]
+  },
 ]
 
 

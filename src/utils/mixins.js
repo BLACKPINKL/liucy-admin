@@ -23,8 +23,9 @@ const mixin = {
 
     // 获取表单
     loadForms(name) {
-      getForm({name}).then(res => {
-        this.rule = res.data.forms
+      return getForm({name}).then(res => {
+        this.rule = res.data.forms || []
+        return res
       })
     },
     msg(type, title) {

@@ -65,7 +65,6 @@ const mixin = {
         })
         .options(this.basicFiled.radios)
         .validate([{
-          type: 'array',
           required: prams.required,
           message: `请选择${prams.label}`,
           trigger: 'blur'

@@ -238,39 +238,41 @@
           
           return
         }
-        if(filed === 'placeholder' || filed === 'action') {
+         if(filed === 'placeholder' || filed === 'action') {
           console.log('改了');
           
           update['props'] = { [filed]: val}
         }
 
-        if(filed === 'required') {
+         if(filed === 'required') {
           console.log('re', Boolean(e.length));
           
           update['validate'] = [{ [filed]: Boolean(e.length)}]
         }
         // 如果更改宽度
-        if(filed == 'span'){
+         if(filed == 'span'){
           update['col'] = {
             [filed]: parseInt(val)
           }
         }
 
-        if(filed === 'title') {
+         if(filed === 'title') {
           update['validate'] = [{ message: `请输入${val}`}]
         }
        
         // 如果当前选中的表单为 多选框和选择器 需要把值放入数组中
-        if(this.actived === ('checkbox' || 'select')) {
-          console.log('jinlai');
+         if(this.actived === 'select' || this.actived === 'checkbox') {
           
-          update[filed] = [val]
+          let arr = []
+          arr.push(val)
+          update[filed] = arr
+          
         }
         // 如果是日期 直接复制当前e参数
-        if(this.actived === 'datePicker') {
+         if(this.actived === 'datePicker') {
           update[filed] = e
         }
-        if(this.actived === 'upload' && filed === 'filed') {
+         if(this.actived === 'upload' && filed === 'filed') {
           update['props'] = {name: val, data: {fileField: val}}
           update[filed] = val
         }
@@ -278,7 +280,7 @@
          else update[filed] = val
         
         $f.updateRule(id, update)
-        console.log(this.rule);
+        console.log(update, this.rule);
         
       },
 
