@@ -26,27 +26,27 @@ export default {
   },
   methods: {
     loadCateList() {
+      
       getCate({}).then(res => {
         return this.loadForms('add_cate').then(forms => {
           return res
         })
       }).then(res2 => {
-        let $f = this.$refs.fc.$f
-        let options = [
-          {
-            label: '顶级分类',
-            value: '0'
+       
+        this.rule.some(item => {
+          if(item.field === 'pid') {
+            res2.data.forEach(cate => {
+              item.options.push({
+                label: cate.cate_name,
+                value: cate.id + ''
+              })
+            })
+            return true
           }
-        ]
-        res2.data.forEach(item => {
-          options.push({
-            label: item.cate_name,
-            value: item.id
-          })
         })
-        $f.updateRule('pid', {
-          options
-        })
+
+
+        
       })
     }
   }

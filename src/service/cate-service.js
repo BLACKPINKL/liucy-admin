@@ -12,3 +12,9 @@ export const getCate = (data) => {
     data
   })
 }
+export const delCate = (data) => {
+  return httpGet({
+    url: `${host}/del`,
+    data
+  })
+}

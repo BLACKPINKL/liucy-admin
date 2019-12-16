@@ -95,6 +95,16 @@ export const constantsRoutes =  [
         }
       },
       {
+        path: 'cate_module',
+        component: () => import('pages/article/cateModule'),
+        name: 'cateModule',
+        meta: {
+          title: '分类管理',
+          icon: 'ios-search',
+          noCache: true
+        }
+      },
+      {
         path: 'add_article',
         component: () => import('pages/article/add'),
         name: 'article_add',
