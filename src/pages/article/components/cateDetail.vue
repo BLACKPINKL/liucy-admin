@@ -5,12 +5,13 @@
 </template>
 
 <script>
-import mixin from 'utils/mixins'
+import commonMixin from 'utils/mixins'
+import mixin from 'pages/article/components/mixins'
 import {changeStr} from 'utils'
 import {addCate, getCate, getCateById, updateCateById} from 'service/cate-service'
 export default {
   name: 'article_cate',
-  mixins: [mixin],
+  mixins: [commonMixin, mixin],
   props: {
     isEdit: {
       type: Boolean,
@@ -48,7 +49,7 @@ export default {
       }).then(res2 => {
        // 如果当前是编辑 
         if(this.isEdit) this.loadCateById()
-        this.addOptions(res2)
+        this.addOptions(res2, 'pid')
 
         
       })
@@ -67,20 +68,7 @@ export default {
         this.loadCateList()
       })
     },
-    // 添加表单select
-    addOptions(arr) {
-      this.rule.some(item => {
-        if(item.field === 'pid') {
-          arr.data.forEach(cate => {
-            item.options.push({
-              label: cate.cate_name,
-              value: cate.id + ''
-            })
-          })
-          return true
-        }
-      })
-    },
+    
     // 编辑数据
     loadCateById() {
       let id = this.$route.params && this.$route.params.id
