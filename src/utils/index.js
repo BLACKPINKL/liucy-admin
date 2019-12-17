@@ -111,6 +111,17 @@ export const resolvePath = (basePath, path) => {
   return Path.resolve(basePath, path)
 }
 
+export const changeStr = (obj) => {
+  if(!obj) return {}
+  for (let key in obj) {
+    if (obj.hasOwnProperty(key)) {
+      let el = obj[key];
+      if(typeof el === 'number') obj[key] += ''
+    }
+  }
+  return obj
+}
+
 // 已打开的submenu
 export const getOpenedNames = (routerList, name) => {
   let arr = []

@@ -18,3 +18,15 @@ export const delCate = (data) => {
     data
   })
 }
+export const updateCateById = (data) => {
+  return httpPost({
+    url: `${host}/update`,
+    data
+  })
+}
+export const getCateById = (data) => {
+  return httpGet({
+    url: `${host}/getById`,
+    data
+  })
+}

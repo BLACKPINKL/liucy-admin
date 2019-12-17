@@ -85,7 +85,7 @@ export default {
     },
     // 编辑
     handleClickEdit(row) {
-
+      this.$router.push({path: `edit_cate/${row.id}`})
     },
     loadCateList() {
       getCate({}).then(res =>{

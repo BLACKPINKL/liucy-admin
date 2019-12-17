@@ -86,7 +86,7 @@ export const constantsRoutes =  [
     children: [
       {
         path: 'add_cate',
-        component: () => import('pages/article/cate'),
+        component: () => import('pages/article/cateAdd'),
         name: 'article_add_cate',
         meta: {
           title: '添加分类',
@@ -95,9 +95,20 @@ export const constantsRoutes =  [
         }
       },
       {
+        path: 'edit_cate/:id',
+        component: () => import('pages/article/cateEdit'),
+        name: 'article_edit_cate',
+        meta: {
+          title: '编辑分类',
+          icon: 'ios-search',
+          noCache: true,
+          hidden: true
+        }
+      },
+      {
         path: 'cate_module',
         component: () => import('pages/article/cateModule'),
-        name: 'cateModule',
+        name: 'cate_module',
         meta: {
           title: '分类管理',
           icon: 'ios-search',
@@ -106,10 +117,31 @@ export const constantsRoutes =  [
       },
       {
         path: 'add_article',
-        component: () => import('pages/article/add'),
-        name: 'article_add',
+        component: () => import('pages/article/articleAdd'),
+        name: 'add_article',
         meta: {
           title: '添加文章',
+          icon: 'ios-search',
+          noCache: true
+        }
+      },
+      {
+        path: 'edit_article',
+        component: () => import('pages/article/articleEdit'),
+        name: 'edit_article',
+        meta: {
+          title: '编辑文章',
+          icon: 'ios-search',
+          noCache: true,
+          hidden: true
+        }
+      },
+      {
+        path: 'module_article',
+        component: () => import('pages/article/articleList'),
+        name: 'add_article',
+        meta: {
+          title: '文章管理',
           icon: 'ios-search',
           noCache: true
         }
