@@ -46,7 +46,9 @@
       editor.customConfig.onchange = (html) => {
         // 父组件绑定v-model  抛出value
         let value = this.showErrTip(html)
-        this.$emit('input', value)
+        this.$emit('input', editor.txt.text())
+        console.log();
+        
         
       }
       // blur事件

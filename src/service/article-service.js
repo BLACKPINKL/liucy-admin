@@ -12,3 +12,9 @@ export const addArticle = (data) => {
     data
   })
 }
+// export const addArticle = (data) => {
+//   return httpPost({
+//     url: `${host}/add`,
+//     data
+//   })
+// }

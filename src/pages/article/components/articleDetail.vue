@@ -52,6 +52,7 @@ export default {
         // 验证通过
         let data = $f.formData()
         data.content = this.html
+        data.thumb = data.thumb[0]
         this.handleAddArticle(data)
       })
     },
