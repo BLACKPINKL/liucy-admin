@@ -46,15 +46,13 @@
       editor.customConfig.onchange = (html) => {
         // 父组件绑定v-model  抛出value
         let value = this.showErrTip(html)
-        this.$emit('input', editor.txt.text())
-        console.log();
+        this.$emit('input', html)
         
         
       }
       // blur事件
       editor.customConfig.onblur = (html) => {
         // html 即编辑器中的内容
-        console.log('onblur', html)
         this.showErrTip(html)
 
       }
