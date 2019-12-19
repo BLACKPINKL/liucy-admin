@@ -111,6 +111,7 @@ export const resolvePath = (basePath, path) => {
   return Path.resolve(basePath, path)
 }
 
+// 对象中的数字转换字符串
 export const changeStr = (obj) => {
   if(!obj) return {}
   for (let key in obj) {
@@ -120,6 +121,16 @@ export const changeStr = (obj) => {
     }
   }
   return obj
+}
+
+// html字符串反转义
+export const HTMLDecode = (text) => { 
+  // TODO
+  let temp = document.createElement("div")
+  temp.innerHTML = text
+  let output = temp.innerText || temp.textContent
+  temp.remove()
+  return output
 }
 
 // 已打开的submenu

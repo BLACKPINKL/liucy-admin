@@ -10,6 +10,7 @@
 <script>
 import {getArticles, addArticle} from 'service/article-service'
 import {getCate} from 'service/cate-service'
+
 import commonMixin from 'utils/mixins'
 import Editor from 'components/editor'
 import {maker} from '@form-create/iview'
@@ -60,6 +61,7 @@ export default {
     handleAddArticle(data) {
       addArticle(data).then(res => {
         this.msg('success', '添加成功')
+        this.loadCateList()
       })
     },
     // 加载分类列表

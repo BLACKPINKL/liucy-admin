@@ -1,6 +1,7 @@
 <template>
   <div>
     <formCreate ref="fc" :rule="rule" :option="option"></formCreate>
+    <div v-html="html"></div>
   </div>
 </template>
 
@@ -18,11 +19,14 @@ export default {
           
         }
       },
-      rule: []
+      rule: [],
+      
+      html: ''
     }
   },
   mounted() {
-    console.log('asdasd');
+    this.html = this.HTMLDecode('&lt;h1&gt;gfb&lt;span style=font-weight: bold;&gt;gfbgfbfgb&lt;/span&gt;&lt;/h1&gt;')
+    console.log();
     // this.rule = [
     //     {
     //       type: 'select',
@@ -72,7 +76,16 @@ export default {
       // ]
       // console.log(res.data.forms, this.rule);
     })
-  }
+  },
+  methods: {
+    HTMLDecode(text) { 
+      var temp = document.createElement("div"); 
+      temp.innerHTML = text; 
+      var output = temp.innerText || temp.textContent; 
+      temp.remove()
+      return output; 
+    }
+  },  
 }
 </script>
 
