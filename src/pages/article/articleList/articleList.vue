@@ -23,10 +23,12 @@
         
       </template>
       <template slot-scope="{row}" slot="show_top">
-        {{ row.show_top == 1 ? '是' : '否' }}
+        <Tag color="success" v-if="row.show_top == 1">是</Tag>
+        <Tag color="error" v-else>否</Tag>
       </template>
       <template slot-scope="{row}" slot="show_status">
-        {{ row.show_status == 1 ? '显示' : '隐藏' }}
+        <Tag color="success" v-if="row.show_status == 1">显示</Tag>
+        <Tag color="error" v-else>隐藏</Tag>
       </template>
     </Table> 
   </div>
@@ -93,6 +95,7 @@ export default {
     this.loadArticleList()
   },
   computed: {
+    // 获取多个作者
     getAuths() {
       return function(arr) {
         let str = ''
@@ -112,15 +115,16 @@ export default {
     },
     // 查看内容
     handleArticleContent(row) {
-      // 反转义html
-      let content = HTMLDecode(row.content)
-      console.log(content);
-      
-      this.modalInstance('info', `<p>${content}</p>`, () => {})
+      let content = row.content
+      // 如果是&lt需要转义
+      if(new RegExp("^(&lt|&gt).*$").test(content)) content = HTMLDecode(content)
+      this.modalInstance('info', `<p>${content}</p>`, () => {}, '80%')
+    
     },
     handleArticleEdit(row) {
 
     },
+
     handleArticleRemove(row) {
 
     },
