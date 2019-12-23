@@ -6,7 +6,7 @@
 
 <script>
   export default {
-    name: 'product_category'
+    name: 'product_type'
   }
 </script>
 

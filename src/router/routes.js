@@ -71,7 +71,87 @@ export const constantsRoutes =  [
           title: '分类管理',
           icon: 'md-flame',
           noCache: true
-        }
+        },
+        children: [
+          {
+            path: 'add',
+            component: () => import('pages/product/category/add'),
+            name: 'product_category_add',
+            meta: {
+              title: '添加分类',
+              icon: 'ios-search',
+              noCache: true
+            },
+          },
+          {
+            path: 'edit/:id',
+            component: () => import('pages/product/category/edit'),
+            name: 'product_category_edit',
+            meta: {
+              title: '编辑分类',
+              icon: 'ios-search',
+              noCache: true,
+              hidden: true
+            },
+          },
+          {
+            path: 'list',
+            component: () => import('pages/product/category/list'),
+            name: 'product_category_list',
+            meta: {
+              title: '分类列表',
+              icon: 'ios-search',
+              noCache: true
+            },
+          },
+        ]
+
+
+      },
+      {
+        path: 'type',
+        component: () => import('pages/product/type'),
+        name: 'product_type',
+        meta: {
+          title: '类型管理',
+          icon: 'md-flame',
+          noCache: true
+        },
+        children: [
+          {
+            path: 'add',
+            component: () => import('pages/product/type/add'),
+            name: 'product_type_add',
+            meta: {
+              title: '添加类型',
+              icon: 'ios-search',
+              noCache: true
+            },
+          },
+          {
+            path: 'edit/:id',
+            component: () => import('pages/product/type/edit'),
+            name: 'product_type_edit',
+            meta: {
+              title: '编辑类型',
+              icon: 'ios-search',
+              noCache: true,
+              hidden: true
+            },
+          },
+          {
+            path: 'list',
+            component: () => import('pages/product/type/list'),
+            name: 'product_type_list',
+            meta: {
+              title: '类型列表',
+              icon: 'ios-search',
+              noCache: true
+            },
+          },
+        ]
+
+
       },
     ]
   },

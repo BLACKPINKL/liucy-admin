@@ -48,7 +48,6 @@
         let value = this.showErrTip(html)
         this.$emit('input', html)
         
-        
       }
       // blur事件
       editor.customConfig.onblur = (html) => {
