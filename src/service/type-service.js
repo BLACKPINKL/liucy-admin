@@ -21,6 +21,7 @@ export const getTypeById = (data) => {
   })
 }
 
+
 export const updateType = (data) => {
   return httpPost({
     url: `${host}/update`,

@@ -2,23 +2,17 @@
   <div>
     <Table border :columns="columns" :data="data">
       <template slot-scope="{row, index}" slot="action">
-        <Button type="primary" size="small" style="margin-right: 5px" @click="handleAttrList(row, index)">属性</Button>
-        <Button type="primary" size="small" style="margin-right: 5px" @click="handleTypeEdit(row, index)">编辑</Button>
+        <Button type="primary" size="small" style="margin-right: 5px" @click="handleAttrEdit(row, index)">编辑</Button>
         
-        <Button v-if="!row.delete_time" type="error" size="small" @click="handleTypeRemove(row)">删除</Button>
-        <Button v-else type="error" size="small" @click="handleTypeRecover(row)">恢复</Button>
+        <Button v-if="!row.delete_time" type="error" size="small" @click="handleAttrRemove(row)">删除</Button>
+        <Button v-else type="error" size="small" @click="handleAttrRecover(row)">恢复</Button>
       </template>
       
-      <template slot-scope="{row}" slot="status">
-        <i-switch 
-          disabled
-          :value="row.delete_time ? false : true"
-          size="large"
-          true-color="#13ce66" 
-          false-color="#ff4949">
-          <span slot="open">显示</span>
-          <span slot="close">隐藏</span>
-        </i-switch>
+      <template slot-scope="{row}" slot="type">
+        <Tag color="primary">{{getAttrType(row.attr_type)}}</Tag>
+      </template>
+      <template slot-scope="{row}" slot="type_id">
+        {{row.type.type_name}}
       </template>
     </Table>
   </div>
@@ -30,10 +24,10 @@ import 'viewerjs/dist/viewer.css'
 import Viewer from 'v-viewer'
 
 Vue.use(Viewer)
-import {getTypeList, removeType, recoverType} from 'service/type-service'
+import {getAttrList, getTypesById, removeAttr} from 'service/attr-service'
 import commonMixin from 'utils/mixins'
 export default {
-  name: 'type_list',
+  name: 'Attr_list',
   mixins: [commonMixin],
   data() {
     return {
@@ -45,14 +39,24 @@ export default {
           title: 'ID'
         },
         {
-          key: 'type_name',
-          title: '商品类型名称'
+          key: 'attr_name',
+          title: '商品属性名称'
+        },
+        {
+          key: 'attr_type',
+          title: '商品属性类型',
+          slot: 'type'
+        },
+        {
+          key: 'attr_values',
+          title: '商品属性值',
         },
         
         {
-          key: 'delete_time',
-          title: '商品类型状态',
-          slot: 'status'
+          key: 'type_id',
+          title: '所属类型',
+          slot: 'type_id',
+          
         },
         {
           align: 'center',
@@ -63,39 +67,43 @@ export default {
     }
   },
   mounted() {
-    this.loadTypeList({})
+    let id = this.$route.params && this.$route.params.id
+    if(!id) this.loadAttrList({})
+    else this.loadTypes(id)
+  },
+  computed: {
+    getAttrType() {
+      return function(type) {
+        if(type === 0) return '单选'
+        if(type === 1) return '多选'
+      }
+    }
   },
   methods: {
-    loadTypeList(data) {
-      getTypeList(data).then(res => this.data = res.data)
+    // 根据类型id获所属属性
+    loadTypes(id) {
+      getTypesById({id}).then(res => {
+        this.data = res.data
+      })
+    },
+    loadAttrList(data) {
+      getAttrList(data).then(res => this.data = res.data)
     },
     // 编辑品牌
-    handleTypeEdit(row, i) {
+    handleAttrEdit(row, i) {
       // TODO 
-      this.$router.push({path: `/type/edit/${row.id}`})
+      this.$router.push({path: `/attr/edit/${row.id}`})
     },
     // 删除品牌
-    handleTypeRemove(row) {
+    handleAttrRemove(row) {
       this.modalInstance('warning', '您确定要删除该品牌吗？', () => {
-        removeType({id: row.id}).then(res => {
+        removeAttr({id: row.id}).then(res => {
           this.$Message.success('删除成功', 1500)
-          this.loadTypeList({})
+          this.loadAttrList({})
         })
       })
       
     },
-    // 恢复删除
-    handleTypeRecover(row) {
-      this.modalInstance('warning', '您确定要恢复该品牌吗？', () => {
-        recoverType({id: row.id}).then(res => {
-          this.$Message.success('恢复成功', 1500)
-          this.loadTypeList({})
-        })
-      })
-    },
-    handleAttrList(row) {
-      //TODO
-    }
   }
 }
 </script>

@@ -8,6 +8,7 @@
 import commonMixin from 'utils/mixins'
 import mixin from 'pages/article/components/mixins'
 import {changeStr} from 'utils'
+import {getTypeList} from 'service/type-service'
 import {addAttr, getAttrList, getAttrById, updateAttr} from 'service/attr-service'
 export default {
   name: 'attr_detail',
@@ -20,7 +21,7 @@ export default {
   },
   created() {
     
-    this.loadAttrList()
+    this.loadTypeList()
   },
   data() {
     return {
@@ -28,6 +29,9 @@ export default {
       option: {
           // 获取表单数据
         onSubmit: (data) => {
+          // 将逗号转换全英文符
+          let values = data.attr_values
+          data.attr_values = values.replace(/\，/ig, ',')
           // // 提交服务端 判断是否为编辑
           if(!this.isEdit){
             this.handleAddAttr(data)
@@ -44,19 +48,20 @@ export default {
     }
   },
   methods: {
-    handleLoadForm() {
-      return this.loadForms('add_attr')
-    },
-    loadAttrList() {
-      
-      getAttrList({}).then(res => {
-        return this.handleLoadForm().then(forms => {
-          return res
+    loadTypeList() {
+      getTypeList({}).then(typeData => {
+        return typeData
+      })
+      .then(res => {
+        this.loadForms('add_attr').then(forms => {
+          console.log(res);
+          
+          this.addOptions({field: 'type_id', labelKey: 'type_name', valueKey: 'id'}, res.data)
+          
+          if(this.isEdit) this.loadAttrById()
         })
       })
-      .then(res2 => {
-        if(this.isEdit) this.loadAttrById()
-      })
+      
     },
     // 编辑回显
     loadAttrById() {
@@ -83,7 +88,7 @@ export default {
     handleAddAttr(data) {
       addAttr(data).then(res => {
         this.$Message.success('添加成功', 1500)
-        this.handleLoadForm()
+        this.loadTypeList()
       })
     },
   },

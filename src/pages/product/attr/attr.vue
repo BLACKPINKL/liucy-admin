@@ -6,7 +6,7 @@
 
 <script>
   export default {
-    name: 'product_type'
+    name: 'product_attr'
   }
 </script>
 

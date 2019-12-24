@@ -21,6 +21,13 @@ export const getAttrById = (data) => {
   })
 }
 
+export const getTypesById = (data) => {
+  return httpGet({
+    url: `${host}/getTypesById`,
+    data
+  })
+}
+
 export const updateAttr = (data) => {
   return httpPost({
     url: `${host}/update`,

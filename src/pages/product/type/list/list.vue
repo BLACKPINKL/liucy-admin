@@ -95,6 +95,9 @@ export default {
     },
     handleAttrList(row) {
       //TODO
+      this.$router.push({name: 'product_attr_list', params: {
+        id: row.id
+      }})
     }
   }
 }

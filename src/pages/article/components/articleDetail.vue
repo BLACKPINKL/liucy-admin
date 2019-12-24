@@ -73,7 +73,7 @@ export default {
       }).then(res2 => {
        // 如果当前是编辑 
         // if(this.isEdit) this.loadCateById()
-        this.addOptions(res2, 'cate_id', [1, 2])
+        this.addOptions({field: 'cate_id', labelKey: 'cate_name', valueKey: 'id'}, res2.data)
 
         
       })

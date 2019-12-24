@@ -1,18 +1,25 @@
 const v = {
   methods: {
     // 添加表单select
-    addOptions(arr = [], field = '', disabled = []) {
+    addOptions(params = {}, data = []) {
       this.rule.some(item => {
-        if(item.field === field) {
-          arr.data.forEach(cate => {
+        console.log(item.field, params.field);
+        
+        if(item.field === params.field) {
+          data.forEach(res => {
+            console.log(res);
+            
             item.options.push({
-              label: cate.cate_name,
-              value: cate.id + '',
-              disabled: disabled.includes(cate.id)
+              label: res[params.labelKey],
+              value: res[params.valueKey] + '',
+              disabled: params.disabled || false,
             })
+            // 解决没有value无法显示问题
+            item.value = '0'
           })
           return true
         }
+        
       })
     },
     

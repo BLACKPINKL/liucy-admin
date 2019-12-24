@@ -153,6 +153,51 @@ export const constantsRoutes =  [
 
 
       },
+      {
+        path: 'attr',
+        component: () => import('pages/product/attr'),
+        name: 'product_attr',
+        meta: {
+          title: '属性管理',
+          icon: 'md-flame',
+          noCache: true
+        },
+        children: [
+          {
+            path: 'add',
+            component: () => import('pages/product/attr/add'),
+            name: 'product_attr_add',
+            meta: {
+              title: '添加属性',
+              icon: 'ios-search',
+              noCache: true
+            },
+          },
+          {
+            path: 'edit/:id',
+            component: () => import('pages/product/attr/edit'),
+            name: 'product_attr_edit',
+            meta: {
+              title: '编辑属性',
+              icon: 'ios-search',
+              noCache: true,
+              hidden: true
+            },
+          },
+          {
+            path: 'list',
+            component: () => import('pages/product/attr/list'),
+            name: 'product_attr_list',
+            meta: {
+              title: '属性列表',
+              icon: 'ios-search',
+              noCache: true
+            },
+          },
+        ]
+
+
+      },
     ]
   },
   {
